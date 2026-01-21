@@ -7,7 +7,7 @@
 <template>
     <div class="container">
         <h1>{{ message.split('').reverse().join('') }}</h1>
-        <button class="button is primary" @click="message = 'I need sleep!'">This is a button</button>
+        <button class="button is-primary" @click="message = 'I need sleep!'">This is a button</button>
         <input class="input" v-model="message">
     </div>
 </template>

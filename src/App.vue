@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import RouterTabs from './components/RouterTabs.vue';
+import { ref } from 'vue'
+import RouterTabs from './components/RouterTabs.vue'
 
 </script>
 

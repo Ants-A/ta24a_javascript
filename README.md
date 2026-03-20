@@ -1,15 +1,13 @@
-# learnnode
+Kuidas initilizida:
 
-To install dependencies:
+* Ava Git Bash või linuxil oma terminal
+* cd Documents/Github/sinu-repo
+* bun init
+* bun add vitejs/plugin-vue axios boxen bulma sass vite vue vue-router
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.3.2. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+Kui soovid jooksutada:
+* bunx vite
+* bun run dev (nõuab selle lisamist package.json-isse:
+"scripts": {
+  "dev": "vite"
+},

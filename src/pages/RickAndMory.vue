@@ -1,51 +1,57 @@
 <script setup>
-import axios from "axios";
-import { computed, ref } from "vue";
-import CharacterCard from "../components/CharacterCard.vue";
+import axios from "axios"
+import { computed, ref } from "vue"
+import CharacterCard from "../components/CharacterCard.vue"
 
-let characters = ref([]);
+let characters = ref([])
 let pagination = ref({
     count: 0,
     pages: 0,
     next: null,
     prev: null,
-});
+})
 
-let current = ref(1);
+let current = ref(1)
 
-let searchInput = ref('');
+let searchInput = ref('')
+let search_status = ref('')
+let search_gender = ref('')
 
-await getCharacters(current.value);
+await getCharacters(current.value)
 
 async function getCharacters(page) {
-    current.value = page;
+    current.value = page
+    const params = { page: page }
+
+    const name = searchInput.value.trim()
+    if (name) params.name = name
+    if (search_status.value) params.status = search_status.value
+    if (search_gender.value) params.gender = search_gender.value
+
     let res = await axios.get('https://rickandmortyapi.com/api/character', {
-        params: {
-            page: page,
-            name: searchInput.value
-        }
-    });
-    console.log(res.data);
-    characters.value = res.data.results;
-    pagination.value = res.data.info;
+        params,
+    })
+    console.log(res.data)
+    characters.value = res.data.results
+    pagination.value = res.data.info
 }
 
 async function next() {
-    await getCharacters(current.value + 1);
+    await getCharacters(current.value + 1)
 }
 
 async function prev() {
-    await getCharacters(current.value - 1);
+    await getCharacters(current.value - 1)
 }
 
 
 let pages = computed(() => {
-    let pages = [];
+    let pages = []
     for (let i = 1; i <= 3; i++) {
-        pages[i] = i;
+        pages[i] = i
     }
     if (current.value > 6) {
-        pages.push("...");
+        pages.push("...")
     }
 
     for (
@@ -53,26 +59,38 @@ let pages = computed(() => {
         i <= current.value + 2 && i <= pagination.value.pages;
         i++
     ) {
-        pages[i] = i;
+        pages[i] = i
     }
-    if (current.value < pagination.value.pages - 2) pages.push("...");
+    if (current.value < pagination.value.pages - 2) pages.push("...")
 
     for (let i = pagination.value.pages - 2; i <= pagination.value.pages; i++) {
-        pages[i] = i;
+        pages[i] = i
     }
 
-    return pages.filter((p) => p);
-});
+    return pages.filter((p) => p)
+})
 
 //debounce
-let searchTimeout = null;
+let searchTimeout = null
 
 function search() {
-    clearTimeout(searchTimeout);
+    clearTimeout(searchTimeout)
     searchTimeout = setTimeout(async () => {
-        await getCharacters(1);
-    }, 1000);
+        await getCharacters(1)
+    }, 1000)
 }
+
+function status_change(status) {
+    search_status.value = status
+    search()
+}
+
+function gender_change(gender) {
+    search_gender.value = gender
+    search()
+}
+
+
 </script>
 <template>
     <div class="container">
@@ -86,6 +104,49 @@ function search() {
                 </button>
             </div>
         </div>
+
+        <nav class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <p class="subtitle is-5"><strong>Status:</strong></p>
+                </div>
+                <div class="level-item">
+                    <div class="buttons has-addons">
+                        <button v-if="search_status === 'Alive'" class="button is-small is-info">Alive</button>
+                        <button v-else class="button is-small" @click="status_change('Alive')">Alive</button>
+
+                        <button v-if="search_status === 'Dead'" class="button is-small is-info">Dead</button>
+                        <button v-else class="button is-small" @click="status_change('Dead')">Dead</button>
+
+                        <button v-if="search_status === 'Unknown'" class="button is-small is-info">Unknown</button>
+                        <button v-else class="button is-small" @click="status_change('Unknown')">Unknown</button>
+
+                        <button v-if="search_status === ''" class="button is-small is-info">Clear</button>
+                        <button v-else class="button is-small" @click="status_change('')">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <p class="subtitle is-5"><strong>Gender:</strong></p>
+                </div>
+                <div class="level-item">
+                    <div class="buttons has-addons">
+                        <button v-if="search_gender === 'Male'" class="button is-small is-info">Male</button>
+                        <button v-else class="button is-small" @click="gender_change('Male')">Male</button>
+
+                        <button v-if="search_gender === 'Female'" class="button is-small is-info">Female</button>
+                        <button v-else class="button is-small" @click="gender_change('Female')">Female</button>
+
+                        <button v-if="search_gender === 'Unknown'" class="button is-small is-info">Unknown</button>
+                        <button v-else class="button is-small" @click="gender_change('Unknown')">Unknown</button>
+
+                        <button v-if="search_gender === ''" class="button is-small is-info">Clear</button>
+                        <button v-else class="button is-small" @click="gender_change('')">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
             <button class="pagination-previous" :disabled="!pagination.prev" @click="prev">

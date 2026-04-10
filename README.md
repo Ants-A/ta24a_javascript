@@ -3,7 +3,7 @@ Kuidas initilizida:
 * Ava Git Bash või linuxil oma terminal
 * cd Documents/Github/sinu-repo
 * bun init
-* bun add vitejs/plugin-vue axios boxen bulma sass vite vue vue-router
+* bun add axios boxen bulma sass vite vue vue-router
 
 Kui soovid jooksutada:
 * bunx vite
